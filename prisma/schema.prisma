@@ -1,0 +1,938 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model cao_acompanhamento_sistema {
+  co_acompanhamento Int     @id @default(autoincrement()) @db.UnsignedInt
+  email             String? @db.VarChar(40)
+  senha             String? @db.VarChar(20)
+  co_sistema        BigInt? @default(0)
+  status            String? @db.Char(2)
+}
+
+model cao_agendamento {
+  co_agendamento            BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  dt_hr_inicio              DateTime  @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  dt_hr_fim                 DateTime? @db.DateTime(0)
+  co_status_agendamento     BigInt    @default(0)
+  co_diary_report_consultor BigInt    @default(0)
+  co_complemento            BigInt    @default(0)
+}
+
+model cao_arquitetura_os {
+  co_arquitetura BigInt @id @default(0)
+  ds_arquitetura String @default("") @db.VarChar(20)
+}
+
+model cao_atividade {
+  co_atividade    Int    @id @default(autoincrement())
+  ds_atividade    String @default("") @db.VarChar(30)
+  co_tipo_usuario BigInt @default(0)
+}
+
+model cao_atividade_consultor {
+  co_atividade Int     @id @default(autoincrement())
+  ds_atividade String  @default("") @db.VarChar(50)
+  ativo        String? @db.Char(1)
+}
+
+model cao_atividade_report {
+  id           Int      @id @default(autoincrement())
+  co_cliente   Int      @default(0)
+  inicio       String?  @db.VarChar(30)
+  fim          String?  @db.VarChar(30)
+  lembrete     String?  @db.VarChar(50)
+  co_atividade Int      @default(0)
+  co_os        Int      @default(0)
+  assunto      String?  @db.VarChar(60)
+  conteudo     String?  @db.Text
+  status       String   @default("") @db.VarChar(20)
+  tempo        String?  @db.VarChar(30)
+  co_usuario   String   @default("") @db.VarChar(50)
+  data_ativ    DateTime @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  retorno      String   @db.Text
+  co_fase      Int?     @default(0)
+}
+
+model cao_atividade_teste {
+  co_atividade    Int    @id @default(autoincrement())
+  ds_atividade    String @default("") @db.VarChar(30)
+  co_tipo_usuario BigInt @default(0)
+}
+
+model cao_aviso {
+  co_aviso Int    @id @default(autoincrement()) @db.UnsignedInt
+  ds_aviso String @db.Text
+}
+
+model cao_banco_de_horas {
+  id            Int      @id @default(autoincrement())
+  co_usuario    String   @default("") @db.VarChar(255)
+  data_cadastro DateTime @default(dbgenerated("'1970-01-01'")) @db.Date
+  segundos      Int      @default(0)
+  tipo          String   @default("") @db.VarChar(10)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model cao_banco_horas {
+  co_banc_horas Int    @id @default(autoincrement()) @db.UnsignedInt
+  co_usuario    String @default("") @db.VarChar(20)
+  periodo       String @default("") @db.VarChar(7)
+  min_mes       Int    @default(0)
+  min_ferias    Int    @default(0)
+  min_pago      Int    @default(0)
+  min_total     Int    @default(0)
+}
+
+model cao_boleto {
+  co_boleto  Int     @id @default(autoincrement())
+  co_cliente Int     @default(0)
+  co_sistema Int     @default(0)
+  co_os      Int     @default(0)
+  valor      String  @default("") @db.VarChar(128)
+  vencimento String  @default("") @db.VarChar(128)
+  status     Int     @default(0)
+  boleto     String? @db.VarChar(255)
+  linha_dig  String? @db.VarChar(255)
+  parcela    String? @db.VarChar(20)
+}
+
+model cao_bonus {
+  bon_categoria    Int    @default(0)
+  bon_inicio       Int    @default(0)
+  bon_fim          Int    @default(0)
+  bon_valor_sem    Float? @db.Float
+  bon_valor_fimsem Float? @db.Float
+
+  @@id([bon_categoria, bon_inicio, bon_fim])
+}
+
+model cao_bonus_status {
+  id         Int      @id @default(autoincrement())
+  co_usuario String   @default("") @db.VarChar(128)
+  data_solic DateTime @default(dbgenerated("'1970-01-01'")) @db.Date
+  mes        String   @default("") @db.VarChar(128)
+  valor      String   @default("") @db.VarChar(128)
+  is_solic   String?  @db.VarChar(10)
+  is_pg      String?  @db.VarChar(10)
+  is_horas   String?  @db.VarChar(10)
+}
+
+model cao_categorias_ombudsman {
+  idcategoria   Int             @id @default(autoincrement()) @db.TinyInt
+  descricao     String          @default("") @db.VarChar(100)
+  cao_ombudsman cao_ombudsman[]
+}
+
+model cao_cidade {
+  co_cidade BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  no_cidade String @default("") @db.VarChar(30)
+  co_uf     BigInt @default(0)
+}
+
+model cao_cliente {
+  co_cliente            Int     @id @default(autoincrement()) @db.UnsignedInt
+  no_razao              String? @db.VarChar(50)
+  no_fantasia           String? @db.VarChar(50)
+  no_contato            String? @db.VarChar(30)
+  nu_telefone           String? @db.VarChar(15)
+  nu_ramal              String? @db.VarChar(6)
+  nu_cnpj               String? @db.VarChar(18)
+  ds_endereco           String? @db.VarChar(150)
+  nu_numero             Int?
+  ds_complemento        String? @db.VarChar(150)
+  no_bairro             String  @default("") @db.VarChar(50)
+  nu_cep                String? @db.VarChar(10)
+  no_pais               String? @db.VarChar(50)
+  co_ramo               BigInt?
+  co_cidade             BigInt  @default(0)
+  co_status             Int?    @db.UnsignedInt
+  ds_site               String? @db.VarChar(50)
+  ds_email              String? @db.VarChar(50)
+  ds_cargo_contato      String? @db.VarChar(50)
+  tp_cliente            String? @db.Char(2)
+  ds_referencia         String? @db.VarChar(100)
+  co_complemento_status Int?    @db.UnsignedInt
+  nu_fax                String? @db.VarChar(15)
+  ddd2                  String? @db.VarChar(10)
+  telefone2             String? @db.VarChar(20)
+}
+
+model cao_cliente_contato {
+  co_cliente  Int       @id @default(0) @db.UnsignedInt
+  dt_contato  DateTime? @default(dbgenerated("'1970-01-01'")) @db.Date
+  fg_agendado Int?      @default(0) @db.UnsignedInt
+  hr_ini      DateTime? @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  hr_end      DateTime? @default(dbgenerated("'00:00:00'")) @db.Time(0)
+}
+
+model cao_comissao {
+  co_comissao Int      @id @default(autoincrement())
+  co_fatura   Int      @unique(map: "co_fatura") @default(0)
+  dt_efetuado DateTime @default(dbgenerated("'1970-01-01'")) @db.Date
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model cao_complemento {
+  co_complemento BigInt  @id @default(autoincrement()) @db.UnsignedBigInt
+  ds_complemento String? @db.LongText
+}
+
+model cao_conhecimento_usuario {
+  co_usuario      String @default("") @db.VarChar(20)
+  co_conhecimento Int    @default(0) @db.UnsignedInt
+  nv_conhecimento Int?   @db.UnsignedInt
+  is_certificado  Int?   @db.UnsignedTinyInt
+
+  @@id([co_usuario, co_conhecimento])
+}
+
+model cao_conhecimentos {
+  idconhecimento           Int                        @id @default(autoincrement())
+  assunto                  String                     @default("") @db.VarChar(100)
+  conhecimento             String                     @db.Text
+  url                      String                     @db.TinyText
+  tags                     String                     @db.Text
+  usuario                  String                     @default("") @db.VarChar(20)
+  datahora                 DateTime                   @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  cao_usuario              cao_usuario                @relation(fields: [usuario], references: [co_usuario], onDelete: NoAction, map: "cao_conhecimentos_ibfk_1")
+  cao_conhecimentos_fontes cao_conhecimentos_fontes[]
+  cao_pontos_conhecimento  cao_pontos_conhecimento[]
+
+  @@index([usuario], map: "usuario")
+}
+
+model cao_conhecimentos_fontes {
+  idfonte           Int               @id @default(autoincrement())
+  idconhecimento    Int               @default(0)
+  datahora          DateTime          @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  arquivo           String            @default("") @db.VarChar(50)
+  caminho           String            @default("") @db.VarChar(50)
+  cao_conhecimentos cao_conhecimentos @relation(fields: [idconhecimento], references: [idconhecimento], onDelete: NoAction, map: "cao_conhecimentos_fontes_ibfk_1")
+
+  @@index([idconhecimento], map: "idconhecimento")
+}
+
+model cao_custo {
+  co_custo      BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  co_tipo_custo Int       @default(0) @db.TinyInt
+  descricao     String    @default("0") @db.VarChar(100)
+  co_escritorio Int       @default(0) @db.TinyInt
+  dt_compra     DateTime? @db.Date
+  dt_pagamento  DateTime? @db.Date
+  co_boleto     String?   @db.Text
+  valor         Float     @default(0) @db.Float
+  parcela       String?   @db.VarChar(5)
+  pag           Boolean?
+  co_custo_high BigInt    @default(0) @db.UnsignedBigInt
+}
+
+model cao_diary_report {
+  co_diary_report Int       @id @default(autoincrement())
+  hr_gasta        DateTime? @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  co_atividade    Int       @default(0)
+  ds_assunto      String    @db.LongText
+  co_movimento    BigInt    @default(0)
+  nu_os           BigInt?   @db.UnsignedBigInt
+  co_sistema      BigInt?   @db.UnsignedBigInt
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model cao_diary_report_consultor {
+  co_diary_report_consultor Int       @id @default(autoincrement())
+  co_movimento              Int       @default(0)
+  co_atividade              Int       @default(0)
+  ds_empresa                String    @db.MediumText
+  ds_assunto                String    @db.MediumText
+  dt_agendamento            DateTime  @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  dt_agendamento_fim        DateTime? @db.DateTime(0)
+  vl_fechamento             Float     @default(0) @db.Float
+  co_cliente                BigInt?
+}
+
+model cao_documentacao_casos_uso {
+  id         Int    @id @default(autoincrement())
+  nome       String @default("") @db.VarChar(70)
+  co_sistema Int    @default(0)
+}
+
+model cao_documentacao_outros {
+  id         Int    @id @default(autoincrement())
+  nome       String @default("") @db.VarChar(70)
+  co_sistema Int    @default(0)
+}
+
+model cao_documentacao_sistema {
+  id         Int      @id @default(autoincrement())
+  co_sistema Int      @default(0)
+  descricao  String?  @db.Text
+  pasta      String   @default("") @db.VarChar(30)
+  sub_grupo  Int?
+  co_usuario String   @default("") @db.VarChar(60)
+  dt_doc     DateTime @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  arquivo    String   @default("") @db.VarChar(100)
+}
+
+model cao_dr_ativ_comp {
+  id_ativ_comp Int      @id @default(autoincrement())
+  co_usuario   String   @default("") @db.VarChar(20)
+  data         DateTime @default(dbgenerated("'1970-01-01'")) @db.Date
+  assunto      String   @db.Text
+  tempo_gasto  DateTime @default(dbgenerated("'00:00:00'")) @db.Time(0)
+
+  @@index([co_usuario], map: "co_usuario")
+}
+
+model cao_escala_ranking {
+  idescala                Int                       @id @default(autoincrement()) @db.TinyInt
+  qtd_visual              Int                       @default(0) @db.TinyInt
+  pontuacao               Int                       @default(0)
+  cao_pontos_conhecimento cao_pontos_conhecimento[]
+}
+
+model cao_escritorio {
+  co_escritorio Int    @id @default(autoincrement()) @db.UnsignedTinyInt
+  local         String @default("") @db.Char(2)
+}
+
+model cao_fatura {
+  co_fatura     Int      @id @default(autoincrement()) @db.UnsignedInt
+  co_cliente    Int      @default(0)
+  co_sistema    Int      @default(0)
+  co_os         Int      @map("co_os")
+  num_nf        Int      @default(0)
+  total         Float    @default(0) @db.Float
+  valor         Float    @default(0) @db.Float
+  data_emissao  DateTime @default(dbgenerated("'1970-01-01'")) @db.Date
+  corpo_nf      String   @db.Text
+  comissao_cn   Float    @default(0) @db.Float
+  total_imp_inc Float    @default(0) @db.Float
+  cao_os        cao_os   @relation(fields: [co_os], references: [co_os])
+}
+
+model cao_fatura_pag {
+  id_fatura_pag Int      @id @default(autoincrement())
+  co_fatura     Int      @unique(map: "co_fatura") @default(0)
+  dt_efetuado   DateTime @default(dbgenerated("'1970-01-01'")) @db.Date
+  valor_pago    Float    @default(0) @db.Float
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model cao_feriados {
+  dia Int? @default(0) @db.UnsignedTinyInt
+  mes Int? @default(0) @db.UnsignedTinyInt
+  ano Int? @default(0)
+
+  @@ignore
+}
+
+model cao_formacao_idioma_usuario {
+  co_usuario String @default("") @db.VarChar(20)
+  co_idioma  Int    @default(0)
+  nv_leitura Int?
+  nv_escrita Int?
+  nv_fala    Int?
+
+  @@id([co_usuario, co_idioma])
+}
+
+model cao_formacao_usuario {
+  co_usuario     String    @default("") @db.VarChar(20)
+  tp_curso       String    @default("") @db.VarChar(13)
+  ds_curso       String?   @db.VarChar(50)
+  ds_instituicao String?   @db.VarChar(50)
+  dt_conclusao   DateTime? @db.Date
+
+  @@id([co_usuario, tp_curso])
+}
+
+model cao_help_autor {
+  co_autor  Int     @id @default(autoincrement())
+  no_autor  String  @default("0") @db.VarChar(80)
+  co_filial Int     @default(0)
+  nu_ddd1   String? @db.VarChar(4)
+  nu_tel1   String? @db.VarChar(15)
+  nu_ramal1 String? @db.VarChar(6)
+  nu_ddd2   String? @db.VarChar(4)
+  nu_tel2   String? @db.VarChar(15)
+  nu_ramal2 String? @db.VarChar(6)
+  ds_email  String? @db.VarChar(50)
+  ds_funcao String  @default("") @db.VarChar(100)
+
+  @@index([co_autor], map: "co_autor")
+}
+
+model cao_help_chamado {
+  co_chamado Int       @id @default(autoincrement())
+  ds_chamado String    @db.Text
+  ds_solucao String?   @db.Text
+  co_status  Int       @default(0) @db.TinyInt
+  co_motivo  Int       @default(0)
+  co_tela    Int       @default(0)
+  co_autor   Int       @default(0)
+  co_filial  Int       @default(0)
+  co_sistema BigInt    @default(0)
+  dt_chamado DateTime  @default(dbgenerated("'1970-01-01'")) @db.Date
+  dt_solucao DateTime? @db.Date
+
+  @@index([co_chamado], map: "co_chamado")
+}
+
+model cao_help_filial {
+  co_filial  Int    @id @default(autoincrement()) @db.UnsignedInt
+  no_filial  String @default("") @db.VarChar(70)
+  co_cliente Int    @default(0)
+  estado     String @default("") @db.Char(2)
+
+  @@index([co_filial], map: "filialId")
+}
+
+model cao_help_motivo_chamado {
+  co_motivo Int    @id @unique(map: "co_motivo") @default(autoincrement())
+  ds_motivo String @default("0") @db.VarChar(70)
+
+  @@index([co_motivo], map: "co_motivo_2")
+}
+
+model cao_help_status_chamado {
+  co_status Int    @id @unique(map: "co_status") @default(autoincrement())
+  ds_status String @default("0") @db.VarChar(50)
+
+  @@index([co_status], map: "co_status_2")
+}
+
+model cao_help_tela_chamado {
+  co_tela    Int    @id @default(autoincrement())
+  co_cliente Int    @default(0)
+  co_sistema Int    @default(0)
+  ds_tela    String @default("") @db.VarChar(200)
+}
+
+model cao_hist_ocorrencias_os {
+  idocorrencia    Int                          @id @default(autoincrement())
+  co_os           Int?
+  co_usuario      String?                      @db.VarChar(20)
+  data            DateTime?                    @db.DateTime(0)
+  tipo            cao_hist_ocorrencias_os_tipo @default(Interna)
+  descricao       String                       @db.Text
+  responsavel     String                       @default("") @db.VarChar(50)
+  data_fechamento DateTime?                    @db.DateTime(0)
+  cao_usuario     cao_usuario?                 @relation(fields: [co_usuario], references: [co_usuario], map: "cao_hist_ocorrencias_os_ibfk_1")
+  cao_os          cao_os?                      @relation(fields: [co_os], references: [co_os], map: "cao_hist_ocorrencias_os_ibfk_2")
+
+  @@index([co_os], map: "co_os")
+  @@index([co_usuario], map: "co_usuario")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model cao_horario_almoco {
+  co_usuario        String @default("") @db.VarChar(255)
+  almoco_saida_hora String @default("0") @db.VarChar(128)
+  almoco_volta_hora String @default("0") @db.VarChar(128)
+
+  @@ignore
+}
+
+model cao_log_chamado {
+  id         Int      @id @default(autoincrement())
+  co_chamado Int      @default(0)
+  dt_chamado DateTime @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  co_usuario String   @default("") @db.VarChar(128)
+  co_daily   Int      @default(0)
+}
+
+model cao_menu {
+  co_menu   Int     @id @default(autoincrement()) @db.UnsignedTinyInt
+  ds_menu   String  @default("") @db.VarChar(255)
+  ds_pagina String  @default("") @db.VarChar(255)
+  ds_imagem String? @db.VarChar(255)
+}
+
+model cao_menu_contador {
+  co_usuario    String @default("") @db.VarChar(20)
+  co_menu       Int    @default(0) @db.UnsignedTinyInt
+  nu_pontos     Int    @default(0) @db.TinyInt
+  in_processado Int    @default(0) @db.UnsignedTinyInt
+
+  @@id([co_usuario, co_menu])
+}
+
+model cao_movimento {
+  co_movimento    BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  co_usuario      String   @default("") @db.VarChar(50)
+  dt_entrada      DateTime @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  dt_saida_almoco DateTime @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  dt_volta_almoco DateTime @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  dt_saida        DateTime @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  is_encerrado    Int      @default(0) @db.UnsignedTinyInt
+
+  @@index([co_movimento], map: "co_movimento")
+}
+
+model cao_movimento_justificativa {
+  co_movimento_justificativa BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  co_movimento               BigInt @default(0) @db.UnsignedBigInt
+  nu_os                      BigInt @default(0) @db.UnsignedBigInt
+  ds_justificativa           String @db.LongText
+
+  @@index([co_movimento_justificativa], map: "co_movimento_justificativa")
+}
+
+model cao_movimento_os {
+  co_movimento_os   Int       @id @default(autoincrement())
+  nu_os             Int       @default(0)
+  co_sistema        BigInt    @default(0)
+  co_tipo_movimento BigInt?
+  nu_valor          BigInt?
+  ds_valor          String?   @db.LongText
+  usuario_obs       String?   @db.VarChar(30)
+  dt_ini            DateTime? @db.DateTime(0)
+  dt_fim            DateTime? @db.DateTime(0)
+}
+
+model cao_noticia {
+  co_noticia Int      @id @default(autoincrement())
+  assunto    String   @default("") @db.VarChar(255)
+  descricao  String   @db.Text
+  foto       String   @default("") @db.VarChar(255)
+  co_usuario String   @default("") @db.VarChar(60)
+  dt_noticia DateTime @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+}
+
+model cao_obs_cliente {
+  co_obs     Int       @id @default(autoincrement()) @db.UnsignedInt
+  descricao  String    @default("") @db.VarChar(250)
+  co_cliente Int       @default(0) @db.UnsignedInt
+  co_usuario String?   @default("") @db.VarChar(30)
+  dt_obs     DateTime? @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+}
+
+model cao_obs_sistema {
+  co_obs     Int       @id @default(autoincrement()) @db.UnsignedInt
+  descricao  String?   @db.Text
+  co_sistema BigInt?
+  co_usuario String?   @db.VarChar(20)
+  dt_obs     DateTime? @db.DateTime(0)
+}
+
+model cao_ombudsman {
+  id                       Int                      @id @default(autoincrement())
+  idtipo                   Int                      @default(0) @db.TinyInt
+  idcategoria              Int                      @default(0) @db.TinyInt
+  data                     DateTime                 @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  comentario               String                   @db.Text
+  co_escritorio            Int                      @default(0) @db.TinyInt
+  cao_tipo_ombudsman       cao_tipo_ombudsman       @relation(fields: [idtipo], references: [idtipo], onDelete: NoAction, map: "cao_ombudsman_ibfk_1")
+  cao_categorias_ombudsman cao_categorias_ombudsman @relation(fields: [idcategoria], references: [idcategoria], onDelete: NoAction, map: "cao_ombudsman_ibfk_2")
+
+  @@index([co_escritorio], map: "co_escritorio")
+  @@index([idcategoria], map: "idcategoria")
+  @@index([idtipo], map: "idtipo")
+}
+
+model cao_os {
+  co_os                   Int                       @id @default(autoincrement())
+  nu_os                   Int?
+  co_sistema              Int?                      @default(0)
+  co_usuario              String?                   @default("0") @db.VarChar(50)
+  co_arquitetura          Int?                      @default(0)
+  ds_os                   String?                   @default("0") @db.VarChar(200)
+  ds_caracteristica       String?                   @default("0") @db.VarChar(200)
+  ds_requisito            String?                   @db.VarChar(200)
+  dt_inicio               DateTime?                 @db.Date
+  dt_fim                  DateTime?                 @db.Date
+  co_status               Int?                      @default(0)
+  diretoria_sol           String?                   @default("0") @db.VarChar(50)
+  dt_sol                  DateTime?                 @db.Date
+  nu_tel_sol              String?                   @default("0") @db.VarChar(20)
+  ddd_tel_sol             String?                   @db.VarChar(5)
+  nu_tel_sol2             String?                   @db.VarChar(20)
+  ddd_tel_sol2            String?                   @db.VarChar(5)
+  usuario_sol             String?                   @default("0") @db.VarChar(50)
+  dt_imp                  DateTime?                 @db.Date
+  dt_garantia             DateTime?                 @db.Date
+  co_email                Int?
+  co_os_prospect_rel      Int?
+  cao_hist_ocorrencias_os cao_hist_ocorrencias_os[]
+  cao_usuario             cao_usuario?              @relation(fields: [co_usuario], references: [co_usuario])
+  cao_fatura              cao_fatura[]
+}
+
+model cao_os_analista {
+  co_analista Int     @id @default(autoincrement())
+  co_os       Int?    @default(0)
+  co_usuario  String? @default("0") @db.VarChar(50)
+}
+
+model cao_os_chamado {
+  co_chamado    Int      @id @default(autoincrement())
+  co_sistema    Int      @default(0)
+  co_os         Int      @default(0)
+  ds_chamado    String   @default("") @db.VarChar(255)
+  co_tipo       Int      @default(0)
+  co_prioridade Int      @default(0)
+  co_item       Int      @default(0)
+  descricao     String   @db.Text
+  ds_solucao    String   @db.Text
+  tempo         String   @default("") @db.VarChar(30)
+  dt_chamado    DateTime @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  status        Int      @default(0)
+  co_usuario    String   @default("") @db.VarChar(255)
+  co_analista   String   @default("") @db.VarChar(255)
+  email         String?  @db.VarChar(255)
+}
+
+model cao_os_daily_report {
+  co_daily        Int       @id @default(autoincrement())
+  co_os           Int?      @default(0)
+  co_fase         Int?      @default(0)
+  co_usuario      String?   @db.VarChar(50)
+  ds_assunto      String?   @db.Text
+  tempo_gasto     DateTime? @db.Time(0)
+  data            DateTime? @db.DateTime(0)
+  co_status_atual Int?
+  co_chamado      Int?
+  co_atividade    Int?
+}
+
+model cao_os_email {
+  co_email   Int     @id @default(autoincrement())
+  co_os      Int?    @default(0)
+  email      String? @default("0") @db.VarChar(200)
+  senha      String? @default("0") @db.VarChar(20)
+  nome       String  @default("") @db.VarChar(255)
+  co_cliente Int     @default(0)
+  ativo      Int     @default(0)
+  ddd        String? @db.VarChar(20)
+  tel        String? @db.VarChar(40)
+  cargo      String? @db.VarChar(80)
+}
+
+model cao_os_fase {
+  co_fase        Int     @id @default(autoincrement())
+  descricao      String? @default("0") @db.VarChar(200)
+  descricao_ingl String  @default("") @db.VarChar(200)
+  ordem          Int?
+}
+
+model cao_os_item_menu {
+  co_item    Int    @id @default(autoincrement())
+  ds_item    String @default("") @db.VarChar(255)
+  co_sistema Int    @default(0)
+}
+
+model cao_os_obs {
+  co_obs     Int       @id @default(autoincrement())
+  co_os      Int?      @default(0)
+  co_usuario String?   @default("0") @db.VarChar(80)
+  descricao  String?   @db.Text
+  dt_obs     DateTime? @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+}
+
+model cao_os_obs_chamado {
+  co_obs      Int       @id @default(autoincrement())
+  co_chamado  Int?      @default(0)
+  co_usuario  String?   @default("0") @db.VarChar(80)
+  descricao   String?   @db.Text
+  dt_obs      DateTime? @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  email       String?   @db.VarChar(255)
+  arquivo_obs String?   @db.VarChar(255)
+}
+
+model cao_os_prazo {
+  co_prazo       Int  @id @default(autoincrement())
+  co_os          Int? @default(0)
+  co_fase        Int? @default(0) @db.UnsignedInt
+  total_analista Int? @default(0)
+  total_hora     Int? @default(0)
+}
+
+model cao_os_status {
+  co_status_atual Int    @id @default(autoincrement()) @db.UnsignedInt
+  ds_status       String @default("") @db.Char(50)
+}
+
+model cao_pagamento {
+  co_pagamento            BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  co_usuario              String   @default("") @db.VarChar(20)
+  tp_pagamento            String   @default("0") @db.Char(2)
+  dt_pagamento            DateTime @default(dbgenerated("'1970-01-01'")) @db.Date
+  vl_pagamento            Float    @default(0) @db.Float
+  dt_referencia_pagamento DateTime @default(dbgenerated("'1970-01-01'")) @db.Date
+
+  @@index([co_pagamento], map: "nu_os")
+}
+
+model cao_participacao_funcionario {
+  co_part_funcionario Int      @id @default(autoincrement()) @db.UnsignedInt
+  pc_participacao     Float    @default(0) @db.Float
+  co_usuario          String   @default("") @db.VarChar(20)
+  co_escritorio       Int      @default(0) @db.UnsignedTinyInt
+  dt_referencia       DateTime @default(dbgenerated("'1970-01-01'")) @db.Date
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model cao_permissao {
+  co_usuario           String                             @default("") @db.VarChar(20)
+  permissao_intervalo  cao_permissao_permissao_intervalo  @default(dbgenerated("0"))
+  permissao_hora_extra cao_permissao_permissao_hora_extra @default(dbgenerated("0"))
+  cao_usuario          cao_usuario                        @relation(fields: [co_usuario], references: [co_usuario], onDelete: NoAction, map: "cao_permissao_ibfk_1")
+
+  @@index([co_usuario], map: "co_usuario")
+  @@ignore
+}
+
+model cao_permissao_hora_extra {
+  id_permissao Int    @id @default(autoincrement())
+  co_movimento BigInt @default(0)
+}
+
+model cao_pontos_conhecimento {
+  idpontos           Int                @id @default(autoincrement())
+  pontuacao          Int                @default(0) @db.TinyInt
+  co_coordenador     String             @default("") @db.VarChar(50)
+  idconhecimento     Int                @default(0)
+  cao_escala_ranking cao_escala_ranking @relation(fields: [pontuacao], references: [idescala], onDelete: NoAction, map: "cao_pontos_conhecimento_ibfk_1")
+  cao_usuario        cao_usuario        @relation(fields: [co_coordenador], references: [co_usuario], onDelete: NoAction, map: "cao_pontos_conhecimento_ibfk_2")
+  cao_conhecimentos  cao_conhecimentos  @relation(fields: [idconhecimento], references: [idconhecimento], onDelete: NoAction, map: "cao_pontos_conhecimento_ibfk_3")
+
+  @@index([co_coordenador], map: "co_coordenador")
+  @@index([idconhecimento], map: "idconhecimento")
+  @@index([pontuacao, co_coordenador, idconhecimento], map: "pontuacao")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model cao_ramo {
+  co_ramo BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  ds_ramo String @default("") @db.VarChar(60)
+}
+
+model cao_rel_email_os {
+  id       Int @id @default(autoincrement())
+  co_email Int @default(0)
+  co_os    Int @default(0)
+}
+
+model cao_salario {
+  co_usuario   String   @default("") @db.VarChar(20)
+  dt_alteracao DateTime @default(dbgenerated("'1970-01-01'")) @db.Date
+  brut_salario Float    @default(0) @db.Float
+  liq_salario  Float    @default(0) @db.Float
+
+  usuario cao_usuario @relation(fields: [co_usuario], references: [co_usuario])
+
+  @@id([co_usuario, dt_alteracao])
+}
+
+model cao_salario_pag {
+  id_pagamento Int                    @default(autoincrement())
+  co_usuario   String                 @default("") @db.VarChar(20)
+  dt_efetuado  DateTime               @default(dbgenerated("'1970-01-01'")) @db.Date
+  status       cao_salario_pag_status @default(Pendente)
+  observacao   String?                @db.Text
+  cao_usuario  cao_usuario            @relation(fields: [co_usuario], references: [co_usuario], onDelete: NoAction, map: "cao_salario_pag_ibfk_1")
+
+  @@unique([co_usuario, dt_efetuado], map: "unico")
+  @@index([id_pagamento], map: "id_pagamento")
+}
+
+model cao_servico {
+  co_servico Int    @id @default(autoincrement())
+  ds_servico String @default("") @db.VarChar(50)
+}
+
+model cao_sistema {
+  co_sistema         Int       @id @default(autoincrement())
+  co_cliente         Int?      @default(0) @db.UnsignedInt
+  co_usuario         String?   @default("0") @db.VarChar(50)
+  co_arquitetura     Int?      @default(0) @db.UnsignedInt
+  no_sistema         String?   @db.VarChar(200)
+  ds_sistema_resumo  String?   @db.Text
+  ds_caracteristica  String?   @db.Text
+  ds_requisito       String?   @db.Text
+  no_diretoria_solic String?   @db.VarChar(100)
+  ddd_telefone_solic String?   @db.VarChar(5)
+  nu_telefone_solic  String?   @db.VarChar(20)
+  no_usuario_solic   String?   @db.VarChar(100)
+  dt_solicitacao     DateTime? @db.Date
+  dt_entrega         DateTime? @db.Date
+  co_email           Int?
+
+  @@index([co_sistema], map: "co_sistema")
+}
+
+model cao_sistema_obs {
+  co_obs     Int       @id @default(autoincrement()) @db.UnsignedInt
+  descricao  String?   @db.Text
+  co_sistema BigInt?
+  co_usuario String?   @db.VarChar(20)
+  dt_obs     DateTime? @db.DateTime(0)
+}
+
+model cao_status_agendamento {
+  co_status_agendamento BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  ds_status_agendamento String @default("") @db.VarChar(20)
+}
+
+model cao_status_cliente {
+  co_status Int    @id @default(autoincrement()) @db.UnsignedInt
+  ds_status String @default("") @db.VarChar(100)
+}
+
+model cao_status_cliente_complemento {
+  co_complemento_status Int     @id @default(autoincrement()) @db.UnsignedInt
+  ds_status             String? @default("") @db.VarChar(50)
+  co_status             Int?    @db.UnsignedInt
+}
+
+model cao_status_os {
+  co_status_atual Int    @id @default(autoincrement()) @db.UnsignedInt
+  ds_status       String @default("") @db.VarChar(50)
+}
+
+model cao_temp_import {
+  codigo    BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  descricao String @default("") @db.VarChar(60)
+}
+
+model cao_tipo_conhecimento_usuario {
+  co_conhecimento Int     @id @default(autoincrement()) @db.UnsignedInt
+  ds_conhecimento String? @db.VarChar(20)
+  co_sistema      Int     @default(0) @db.UnsignedInt
+
+  @@index([co_conhecimento], map: "co_conhecimento")
+}
+
+model cao_tipo_custo {
+  co_tipo_custo Int    @id @default(autoincrement()) @db.UnsignedTinyInt
+  descricao     String @default("") @db.VarChar(30)
+}
+
+model cao_tipo_idioma_usuario {
+  co_idioma Int     @id @default(autoincrement())
+  ds_idioma String? @db.VarChar(13)
+}
+
+model cao_tipo_ombudsman {
+  idtipo        Int             @id @default(autoincrement()) @db.TinyInt
+  descricao     String          @default("") @db.VarChar(100)
+  cao_ombudsman cao_ombudsman[]
+}
+
+model cao_tipo_sistema_usuario {
+  co_sistema Int     @id @default(autoincrement()) @db.UnsignedInt
+  ds_sistema String? @db.VarChar(40)
+
+  @@index([co_sistema], map: "co_sistema")
+}
+
+model cao_uf {
+  co_uf BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  ds_uf String @default("") @db.Char(5)
+}
+
+model cao_usuario {
+  co_usuario              String                    @id @unique(map: "co_usuario") @default("") @db.VarChar(20)
+  no_usuario              String                    @default("") @db.VarChar(50)
+  ds_senha                String                    @default("") @db.VarChar(14)
+  co_usuario_autorizacao  String?                   @db.VarChar(20)
+  nu_matricula            BigInt?                   @db.UnsignedBigInt
+  dt_nascimento           DateTime?                 @default(dbgenerated("'1970-01-01'")) @db.Date
+  dt_admissao_empresa     DateTime?                 @default(dbgenerated("'1970-01-01'")) @db.Date
+  dt_desligamento         DateTime?                 @db.Date
+  dt_inclusao             DateTime?                 @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  dt_expiracao            DateTime?                 @default(dbgenerated("'1970-01-01'")) @db.Date
+  nu_cpf                  String?                   @db.VarChar(14)
+  nu_rg                   String?                   @db.VarChar(20)
+  no_orgao_emissor        String?                   @db.VarChar(10)
+  uf_orgao_emissor        String?                   @db.VarChar(2)
+  ds_endereco             String?                   @db.VarChar(150)
+  no_email                String?                   @db.VarChar(100)
+  no_email_pessoal        String?                   @db.VarChar(100)
+  nu_telefone             String?                   @db.VarChar(64)
+  dt_alteracao            DateTime                  @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+  url_foto                String?                   @db.VarChar(255)
+  instant_messenger       String?                   @db.VarChar(80)
+  icq                     Int?                      @db.UnsignedInt
+  msn                     String?                   @db.VarChar(50)
+  yms                     String?                   @db.VarChar(50)
+  ds_comp_end             String?                   @db.VarChar(50)
+  ds_bairro               String?                   @db.VarChar(30)
+  nu_cep                  String?                   @db.VarChar(10)
+  no_cidade               String?                   @db.VarChar(50)
+  uf_cidade               String?                   @db.VarChar(2)
+  dt_expedicao            DateTime?                 @db.Date
+  cao_conhecimentos       cao_conhecimentos[]
+  cao_hist_ocorrencias_os cao_hist_ocorrencias_os[]
+  cao_permissao           cao_permissao[]           @ignore
+  cao_pontos_conhecimento cao_pontos_conhecimento[]
+  cao_salario_pag         cao_salario_pag[]
+  permissao_sistemas      permissao_sistema[]
+  cao_os                  cao_os[]
+  cao_salario             cao_salario[]
+
+  @@index([co_usuario, no_usuario, dt_alteracao], map: "co_usuario_2")
+}
+
+model cao_usuario_dt_disp {
+  co_dt_disp Int      @id @default(autoincrement()) @db.UnsignedInt
+  co_usuario String?  @db.VarChar(20)
+  dt_disp    DateTime @default(dbgenerated("'1970-01-01'")) @db.Date
+  dt_alt     DateTime @default(dbgenerated("'1970-01-01'")) @db.Date
+}
+
+model cao_valor_descanso {
+  id             Int    @id @default(autoincrement())
+  co_usuario     String @default("") @db.VarChar(40)
+  segundos       String @default("") @db.VarChar(50)
+  mes_referencia String @default("") @db.VarChar(50)
+}
+
+model permissao_sistema {
+  co_usuario             String   @default("") @db.VarChar(20)
+  co_tipo_usuario        BigInt   @default(0) @db.UnsignedBigInt
+  co_sistema             BigInt   @default(0) @db.UnsignedBigInt
+  in_ativo               String   @default("S") @db.Char(1)
+  co_usuario_atualizacao String?  @db.VarChar(20)
+  dt_atualizacao         DateTime @default(dbgenerated("'1970-01-01 00:00:00'")) @db.DateTime(0)
+
+  cao_usuario cao_usuario @relation(fields: [co_usuario], references: [co_usuario])
+
+  @@id([co_usuario, co_tipo_usuario, co_sistema])
+  @@index([co_usuario, co_tipo_usuario, co_sistema, dt_atualizacao], map: "co_usuario")
+}
+
+model tipo_usuario {
+  co_tipo_usuario BigInt @default(0) @db.UnsignedBigInt
+  ds_tipo_usuario String @default("") @db.VarChar(32)
+  co_sistema      BigInt @default(0) @db.UnsignedBigInt
+
+  @@id([co_tipo_usuario, co_sistema])
+  @@index([co_tipo_usuario, co_sistema], map: "co_tipo_usuario")
+}
+
+enum cao_permissao_permissao_intervalo {
+  zero @map("0")
+  um   @map("1")
+}
+
+enum cao_permissao_permissao_hora_extra {
+  zero @map("0")
+  um   @map("1")
+}
+
+enum cao_salario_pag_status {
+  Autorizado
+  Pago
+  Pendente
+}
+
+enum cao_hist_ocorrencias_os_tipo {
+  Interna
+  Externa
+}
