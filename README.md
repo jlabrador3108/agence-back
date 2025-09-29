@@ -23,13 +23,19 @@
 
    ```
 
-3. **Run**
+4. **Run**
 
    ```bash
     yarn start:dev
+   ```   
+
+5. **Generate Prisma**
+
+   ```bash
+    npx prisma generate
    ```
 
-4. **Documentation Swagger**
+6. **Documentation Swagger**
 
 - http://localhost:5000/docs
 
